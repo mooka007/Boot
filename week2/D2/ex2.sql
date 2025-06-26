@@ -39,6 +39,7 @@ LIMIT 10;
 SELECT *
 FROM film
 ORDER BY rental_rate ASC OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY;
+-- 
 SELECT c.first_name,
     c.last_name,
     p.amount,
@@ -46,14 +47,17 @@ SELECT c.first_name,
 FROM customer c
     JOIN payment p ON c.customer_id = p.customer_id
 ORDER BY c.customer_id ASC;
+-- 
 SELECT f.*
 FROM film f
     LEFT JOIN inventory i ON f.film_id = i.film_id
 WHERE i.inventory_id IS NULL;
+-- 
 SELECT city.city_name,
     country.country_name
 FROM city
     JOIN country ON city.country_id = country.country_id;
+-- 
 SELECT c.customer_id,
     c.first_name,
     c.last_name,
