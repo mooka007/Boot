@@ -20,8 +20,7 @@ console.log(building.numberOfAptByFloor.firstFloor +
             building.numberOfAptByFloor.thirdFloor);
 
 const secondTenant = building.nameOfTenants[1].toLowerCase();
-console.log(building.nameOfTenants[1], 
-            building.numberOfRoomsAndRent[secondTenant][0]);
+console.log(building.nameOfTenants[1], building.numberOfRoomsAndRent[secondTenant][0]);
 
 const sarahRent = building.numberOfRoomsAndRent.sarah[1];
 const davidRent = building.numberOfRoomsAndRent.david[1];
@@ -29,4 +28,11 @@ const danRent = building.numberOfRoomsAndRent.dan[1];
 
 if (sarahRent + davidRent > danRent) {
     building.numberOfRoomsAndRent.dan[1] = 1200;
+
+console.log("Le loyer de Dan a été augmenté à 1200.");
 }
+ else {
+    console.log("Le loyer de Dan reste inchangé.");
+}
+
+console.log("Loyer actuel de Dan :", building.numberOfRoomsAndRent.dan[1]);
