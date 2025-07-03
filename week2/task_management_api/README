@@ -1,0 +1,761 @@
+# Task Management API - Project Documentation
+
+## Project Overview
+
+You will build a simple RESTful API for a Task Management System using Flask and PostgreSQL. This API will allow users to manage tasks with full CRUD operations using raw SQL queries.
+
+## Learning Objectives
+
+- Set up a Python development environment
+- Connect Flask to PostgreSQL database
+- Write raw SQL queries directly in API endpoints
+- Implement basic CRUD operations
+- Handle database connections and errors
+- Create a working API with proper responses
+
+## Simple Project Structure
+
+```
+task_management_api/
+├── app.py              # Single file containing everything
+├── requirements.txt    # Python dependencies
+├── .env               # Environment variables
+└── README.md          # Setup instructions
+
+```
+
+## Phase 1: Environment Setup
+
+### Step 1: Initialize Your Project
+
+**For Mac/Linux:**
+
+```bash
+# Create project folder
+mkdir task_management_api
+cd task_management_api
+
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Verify activation (should show your project path)
+which python
+
+```
+
+**For Windows:**
+
+```
+# Create project folder
+mkdir task_management_api
+cd task_management_api
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+venv\Scripts\activate
+
+# Verify activation (should show your project path)
+where python
+
+```
+
+**Deactivating virtual environment (all platforms):**
+
+```bash
+deactivate
+
+```
+
+### Step 2: Required Libraries Explained
+
+Create a `requirements.txt` file with these packages:
+
+```
+flask==2.3.3
+psycopg2-binary==2.9.7
+python-dotenv==1.0.0
+flask-cors==4.0.0
+
+```
+
+**Library Explanations:**
+
+**Flask (`flask`)**
+
+- **Purpose:** Lightweight web framework for building APIs
+- **What it does:** Creates HTTP endpoints, handles requests/responses, routing
+- **Example:** `@app.route('/users', methods=['GET'])` creates an endpoint
+
+**PostgreSQL Adapter (`psycopg2-binary`)**
+
+- **Purpose:** Connects Python to PostgreSQL database
+- **What it does:** Execute SQL queries, manage database connections
+- **Example:** `cursor.execute("SELECT * FROM users")` runs SQL queries
+
+**Environment Variables (`python-dotenv`)**
+
+- **Purpose:** Loads configuration from `.env` files
+- **What it does:** Keeps sensitive data (passwords, API keys) out of code
+- **Example:** `DB_PASSWORD=mysecret` in `.env` file
+
+**Cross-Origin Resource Sharing (`flask-cors`)**
+
+- **Purpose:** Allows web browsers to access your API from different domains
+- **What it does:** Adds HTTP headers to allow frontend applications to call your API
+- **Example:** Enables React/Vue.js apps to call your API
+
+**Install all packages:**
+
+```bash
+# Make sure your virtual environment is activated
+pip install -r requirements.txt
+
+# Or install individually
+pip install flask psycopg2-binary python-dotenv flask-cors
+
+```
+
+### Step 3: Environment Configuration
+
+Create a `.env` file in your project root:
+
+```
+# Database Configuration
+DB_HOST=localhost
+DB_NAME=task_management_db
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_PORT=5432
+
+# Flask Configuration
+FLASK_ENV=development
+SECRET_KEY=your-secret-key-here
+
+```
+
+**Load environment variables in Python:**
+
+```python
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Access variables
+db_host = os.getenv('DB_HOST')
+db_name = os.getenv('DB_NAME')
+
+```
+
+## Phase 2: Database Setup
+
+### Step 1: Create Your Database
+
+Design these tables in PostgreSQL:
+
+**users table:**
+
+- What fields would a user need?
+- How do you store passwords securely?
+- What about timestamps?
+
+**projects table:**
+
+- What information defines a project?
+- How do you link it to users?
+- What status options make sense?
+
+**tasks table:**
+
+- What details does a task need?
+- How do you connect tasks to projects and users?
+- What are the possible task statuses?
+- How do you handle priorities?
+
+Write the SQL CREATE statements for these tables.
+
+### Step 2: Database Connection
+
+In your `app.py`, create:
+
+1. A function to connect to PostgreSQL - what library method do you use?
+2. A function to execute SQL queries safely - how do you prevent SQL injection?
+3. Error handling for database operations - what can go wrong?
+
+## Phase 3: Basic API Structure & Communication
+
+### Step 1: Flask Application Setup
+
+Create your `app.py` file with basic structure:
+
+```python
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Flask app
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+# Database configuration
+DB_CONFIG = {
+    'host': os.getenv('DB_HOST'),
+    'database': os.getenv('DB_NAME'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'port': os.getenv('DB_PORT')
+}
+
+# Health check endpoint
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        'status': 'healthy',
+        'message': 'API is running'
+    }), 200
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
+```
+
+### Step 2: Understanding API Communication
+
+**HTTP Methods Explained:**
+
+**GET** - Retrieve data (Read operation)
+
+- Used to fetch information
+- Data sent via URL parameters
+- Should not modify server data
+- Example: Get all users, Get user by ID
+
+**POST** - Create new data (Create operation)
+
+- Used to create new resources
+- Data sent in request body (JSON)
+- Modifies server data
+- Example: Create new user, Create new task
+
+**PUT** - Update existing data (Update operation)
+
+- Used to update entire resource
+- Data sent in request body (JSON)
+- Replaces existing resource
+- Example: Update user profile, Update task details
+
+**DELETE** - Remove data (Delete operation)
+
+- Used to delete resources
+- May include ID in URL path
+- Removes data from server
+- Example: Delete user, Delete task
+
+### Step 3: API Endpoint Structure
+
+**URL Path Components:**
+
+```
+https://your-domain.com/api-endpoint/resource-id?query-parameters
+
+Examples:
+GET  /users              -> Get all users
+GET  /users/123          -> Get user with ID 123
+POST /users              -> Create new user
+PUT  /users/123          -> Update user 123
+DELETE /users/123        -> Delete user 123
+
+```
+
+**Path Parameters vs Query Parameters:**
+
+**Path Parameters** (part of URL path):
+
+```python
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    # user_id comes from URL: /users/123
+    print(f"User ID: {user_id}")  # Output: User ID: 123
+
+```
+
+**Query Parameters** (after ? in URL):
+
+```python
+@app.route('/users', methods=['GET'])
+def get_users():
+    # URL: /users?status=active&limit=10&page=1
+    status = request.args.get('status')      # 'active'
+    limit = request.args.get('limit', 10)    # 10 (with default)
+    page = request.args.get('page', 1)       # 1 (with default)
+
+```
+
+**Request Body** (for POST/PUT requests):
+
+```python
+@app.route('/users', methods=['POST'])
+def create_user():
+    # Get JSON data from request body
+    data = request.get_json()
+
+    # Access individual fields
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+```
+
+### Step 4: Complete API Examples
+
+**Example 1: GET with Query Parameters**
+
+```python
+@app.route('/tasks', methods=['GET'])
+def get_tasks():
+    # URL: /tasks?status=pending&priority=high&limit=10&offset=0
+
+    # Get query parameters
+    status = request.args.get('status')          # Optional filter
+    priority = request.args.get('priority')      # Optional filter
+    limit = request.args.get('limit', 10, type=int)    # Default 10
+    offset = request.args.get('offset', 0, type=int)   # Default 0
+
+    # Build SQL query with filters
+    query = "SELECT * FROM tasks WHERE 1=1"
+    params = []
+
+    if status:
+        query += " AND status = %s"
+        params.append(status)
+
+    if priority:
+        query += " AND priority = %s"
+        params.append(priority)
+
+    query += " LIMIT %s OFFSET %s"
+    params.extend([limit, offset])
+
+    # Execute query and return results
+    # ... database code here
+
+    return jsonify({
+        'success': True,
+        'data': results,
+        'total': len(results)
+    }), 200
+
+```
+
+**Example 2: POST with Request Body**
+
+```python
+@app.route('/users', methods=['POST'])
+def create_user():
+    # Get JSON data from request body
+    data = request.get_json()
+
+    # Validate required fields
+    if not data or not data.get('username') or not data.get('email'):
+        return jsonify({
+            'success': False,
+            'message': 'Username and email are required'
+        }), 400
+
+    # Extract data
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    # SQL query with parameters
+    query = """
+    INSERT INTO users (username, email, password)
+    VALUES (%s, %s, %s)
+    RETURNING id, username, email, created_at
+    """
+    params = (username, email, password)
+
+    # Execute query and return results
+    # ... database code here
+
+    return jsonify({
+        'success': True,
+        'data': new_user,
+        'message': 'User created successfully'
+    }), 201
+
+```
+
+**Example 3: PUT with Path and Body Parameters**
+
+```python
+@app.route('/tasks/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    # task_id comes from URL path: /tasks/123
+    # JSON data comes from request body
+
+    data = request.get_json()
+    if not data:
+        return jsonify({
+            'success': False,
+            'message': 'No data provided'
+        }), 400
+
+    # Build dynamic update query
+    update_fields = []
+    params = []
+
+    if 'title' in data:
+        update_fields.append('title = %s')
+        params.append(data['title'])
+
+    if 'status' in data:
+        update_fields.append('status = %s')
+        params.append(data['status'])
+
+    if 'priority' in data:
+        update_fields.append('priority = %s')
+        params.append(data['priority'])
+
+    if not update_fields:
+        return jsonify({
+            'success': False,
+            'message': 'No valid fields to update'
+        }), 400
+
+    # Add task_id to params
+    params.append(task_id)
+
+    # Build final query
+    query = f"""
+    UPDATE tasks
+    SET {', '.join(update_fields)}, updated_at = CURRENT_TIMESTAMP
+    WHERE id = %s
+    RETURNING id, title, status, priority, updated_at
+    """
+
+    # Execute query and return results
+    # ... database code here
+
+    return jsonify({
+        'success': True,
+        'data': updated_task,
+        'message': 'Task updated successfully'
+    }), 200
+
+```
+
+**Example 4: DELETE with Path Parameter**
+
+```python
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    # task_id comes from URL path: /tasks/123
+
+    # Check if task exists first
+    check_query = "SELECT id FROM tasks WHERE id = %s"
+    # ... execute check query
+
+    if not task_exists:
+        return jsonify({
+            'success': False,
+            'message': 'Task not found'
+        }), 404
+
+    # Delete the task
+    delete_query = "DELETE FROM tasks WHERE id = %s"
+    params = (task_id,)
+
+    # Execute delete query
+    # ... database code here
+
+    return jsonify({
+        'success': True,
+        'message': 'Task deleted successfully'
+    }), 200
+
+```
+
+### API Testing Examples
+
+**Using curl commands:**
+
+```bash
+# GET request with query parameters
+curl "http://localhost:5000/tasks?status=pending&limit=5"
+
+# POST request with JSON body
+curl -X POST http://localhost:5000/users \
+  -H "Content-Type: application/json" \
+  -d '{"username": "john_doe", "email": "john@example.com", "password": "secure123"}'
+
+# PUT request with JSON body
+curl -X PUT http://localhost:5000/tasks/123 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "completed", "priority": "high"}'
+
+# DELETE request
+curl -X DELETE http://localhost:5000/tasks/123
+
+```
+
+**Request/Response Examples:**
+
+**POST /users** (Create User)
+
+```json
+// Request Body
+{
+  "username": "alice_smith",
+  "email": "alice@example.com",
+  "password": "mypassword123"
+}
+
+// Response (201 Created)
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "username": "alice_smith",
+    "email": "alice@example.com",
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  "message": "User created successfully"
+}
+
+```
+
+**GET /tasks?status=pending&priority=high** (Get Filtered Tasks)
+
+```json
+// Response (200 OK)
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "title": "Fix urgent bug",
+      "status": "pending",
+      "priority": "high",
+      "due_date": "2024-01-20",
+      "created_at": "2024-01-15T09:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Review security issues",
+      "status": "pending",
+      "priority": "high",
+      "due_date": "2024-01-18",
+      "created_at": "2024-01-14T14:30:00Z"
+    }
+  ],
+  "total": 2
+}
+
+```
+
+### Step 2: User Management Endpoints
+
+Implement these endpoints (write the SQL queries yourself):
+
+**POST /users** - Create a new user
+
+- What validation do you need?
+- How do you hash passwords?
+- What SQL INSERT statement would you write?
+
+**GET /users** - Get all users
+
+- What fields should you return (hint: not passwords)?
+- Write a SELECT statement
+
+**GET /users/{id}** - Get specific user
+
+- How do you use URL parameters?
+- What if the user doesn't exist?
+
+**PUT /users/{id}** - Update user
+
+- Which fields can be updated?
+- How do you build dynamic UPDATE queries?
+
+**DELETE /users/{id}** - Delete user
+
+- What should happen to their tasks and projects?
+- Write the appropriate SQL
+
+### Step 3: Project Management Endpoints
+
+Create these endpoints:
+
+**POST /projects** - Create project
+**GET /projects** - List all projects
+
+**GET /projects/{id}** - Get specific project
+**PUT /projects/{id}** - Update project
+**DELETE /projects/{id}** - Delete project
+
+For each endpoint, ask yourself:
+
+- What SQL query do I need?
+- What parameters does it accept?
+- How do I handle errors?
+- What should the response look like?
+
+### Step 4: Task Management Endpoints
+
+Implement these endpoints:
+
+**POST /tasks** - Create new task
+**GET /tasks** - List all tasks (with filtering)
+**GET /tasks/{id}** - Get specific task
+**PUT /tasks/{id}** - Update task
+**DELETE /tasks/{id}** - Delete task
+
+Additional task endpoints:
+**GET /projects/{id}/tasks** - Get tasks for a project
+**GET /users/{id}/tasks** - Get tasks assigned to a user
+**PUT /tasks/{id}/status** - Update task status only
+
+## Phase 4: Advanced Queries
+
+### Step 1: Filtering and Search
+
+Add query parameters to your endpoints:
+
+- How do you get query parameters in Flask?
+- How do you build dynamic WHERE clauses?
+- What about pagination (LIMIT and OFFSET)?
+
+Example: `GET /tasks?status=pending&priority=high&limit=10`
+
+### Step 2: Complex Queries with Joins
+
+Write SQL queries that join multiple tables:
+
+- Tasks with project and user information
+- Projects with task counts
+- User statistics (number of tasks, completed tasks, etc.)
+
+### Step 3: Status Updates and Workflow
+
+Create endpoints for:
+
+- Moving tasks between statuses
+- Completing projects
+- Getting overdue tasks
+- Getting task statistics
+
+## Phase 5: Error Handling and Validation
+
+### Step 1: Input Validation
+
+For each endpoint, validate:
+
+- Required fields are present
+- Data types are correct
+- Email formats are valid
+- Dates are in correct format
+
+How do you return proper error messages?
+
+### Step 2: Database Error Handling
+
+Handle these scenarios:
+
+- Database connection failures
+- Constraint violations (duplicate emails, etc.)
+- Foreign key violations
+- Invalid SQL queries
+
+### Step 3: HTTP Status Codes
+
+Use appropriate status codes:
+
+- When to return 200, 201, 400, 404, 500?
+- How do you structure error responses?
+
+## Required Deliverables
+
+### Minimum Implementation:
+
+1. Single `app.py` file with all functionality
+2. All CRUD operations working for users, projects, and tasks
+3. Raw SQL queries (no ORM allowed)
+4. Proper database connection handling
+5. Basic error handling and validation
+6. JSON responses for all endpoints
+
+### Your API Must Support:
+
+1. Creating users, projects, and tasks
+2. Listing and filtering data
+3. Updating records
+4. Deleting records (with proper cleanup)
+5. Getting related data (tasks for a project, etc.)
+
+## Testing Your API
+
+### Manual Testing:
+
+1. Use Postman or similar tool
+2. Test all endpoints with valid data
+3. Test error cases (invalid IDs, missing data, etc.)
+4. Verify database changes
+
+### What to Test:
+
+- Can you create a user?
+- Can you create a project for that user?
+- Can you create tasks for that project?
+- Can you update task status?
+- What happens when you delete a project with tasks?
+
+## Getting Started Steps
+
+1. **Setup Environment**
+    - [ ]  Create project folder and virtual environment
+    - [ ]  Install required packages
+    - [ ]  Create .env file with database credentials
+2. **Database Setup**
+    - [ ]  Create PostgreSQL database
+    - [ ]  Design and create your tables
+    - [ ]  Insert some test data manually
+3. **Basic Flask App**
+    - [ ]  Create app.py with Flask initialization
+    - [ ]  Add database connection functions
+    - [ ]  Create a simple health check endpoint
+    - [ ]  Test database connectivity
+4. **Implement CRUD Operations**
+    - [ ]  Start with users endpoints
+    - [ ]  Add projects endpoints
+    - [ ]  Implement tasks endpoints
+    - [ ]  Test each endpoint as you build it
+5. **Add Advanced Features**
+    - [ ]  Add filtering and search
+    - [ ]  Implement complex queries with joins
+    - [ ]  Add proper error handling
+    - [ ]  Test edge cases
+
+## Common Mistakes to Avoid
+
+1. Don't use an ORM - write raw SQL
+2. Don't forget to handle database connection errors
+3. Don't return sensitive information like passwords
+4. Don't forget to validate input data
+5. Don't ignore proper HTTP status codes
+6. Don't commit your .env file to version control
+
+Remember: Keep it simple! One file, raw SQL queries, basic error handling. Focus on making it work correctly rather than making it complex.

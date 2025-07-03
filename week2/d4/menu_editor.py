@@ -1,4 +1,3 @@
-import psycopg2
 from menu_item import MenuItem
 from menu_manager import MenuManager
 
@@ -33,9 +32,6 @@ def show_user_menu():
         else:
             print("Invalid option. Please try again.")
 
-
-
-
 def view_item():
     """View an item by its name."""
     item_name = input("Enter the name of the item to view: ")
@@ -44,9 +40,6 @@ def view_item():
         print(f"\nItem Details: ID: {item['item_id']}, Name: {item['item_name']}, Price: {item['item_price']}")
     else:
         print("Item not found.")
-
-
-
 
 def add_item_to_menu():
     
@@ -61,10 +54,6 @@ def add_item_to_menu():
     except Exception as e:
         print(f"An error occurred while adding the item: {e}")
 
-
-
-
-
 def remove_item_from_menu():
     
     item_name = input("Enter the name of the item you want to remove: ")
@@ -75,11 +64,6 @@ def remove_item_from_menu():
         print("Item was deleted successfully.")
     except Exception as e:
         print(f"An error occurred while deleting the item: {e}")
-
-
-
-
-
 
 def update_item_from_menu():
    
@@ -102,19 +86,12 @@ def update_item_from_menu():
     except Exception as e:
         print(f"An error occurred while updating the item: {e}")
 
-
-
-
-
 def show_restaurant_menu():
     
     items = MenuManager.all_items()
     print("\n--- Restaurant Menu ---")
     for item in items:
         print(f"ID: {item['item_id']}, Name: {item['item_name']}, Price: {item['item_price']}")            
-
-
-
 
 if __name__ == "__main__":
     show_user_menu()

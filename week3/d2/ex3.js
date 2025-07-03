@@ -1,7 +1,10 @@
 
+const prompt = require("prompt-sync")();
 
-let num = parseInt(prompt("ENter a number: "));
+let num = parseInt(prompt("Enter a number: "));
 
-while ( number < 10){
-    number = parseInt(prompt("Enter a new Numero (must be > 10): "));
+while (num < 10) {
+    num = parseInt(prompt("Enter a new number (must be > 10): "));
 }
+
+console.log("Final number:", num);
