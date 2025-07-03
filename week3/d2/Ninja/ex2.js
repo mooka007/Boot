@@ -15,12 +15,10 @@ function showResult(average) {
   }
 }
 
-// 3. Main function
 function findAvg(gradesList) {
-  const avg = calculateAverage(gradesList); // Step 1
-  showResult(avg); // Step 2
+  const avg = calculateAverage(gradesList); 
+  showResult(avg); 
 }
 
-// Example Usage
 const grades = [80, 75, 60];
 findAvg(grades);
