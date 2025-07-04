@@ -8,4 +8,6 @@ function changeEnough(itemPrice, amountOfChange){
     return totalChange >= itemPrice
 }
 
-console.log(changeEnough(4.25, [25, 20, 5, 0]));
+// console.log(changeEnough(4.25, [25, 20, 5, 0]));
+console.log(changeEnough(14.11, [2,100,0,0]))
+console.log(changeEnough(0.75, [0,0,20,5]))
