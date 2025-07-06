@@ -1,0 +1,64 @@
+<!doctype html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="utf-8"> 
+        <title>Volume of a Sphere</title> 
+        <style>  
+            body {
+                padding-top:30px;
+                font-family: Arial, sans-serif;
+                max-width: 500px;
+                margin: 0 auto;
+            } 
+
+            label, input {
+                display:block;
+                margin: 10px 0;
+            }
+
+            input[type="text"] {
+                padding: 8px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            input[type="submit"] {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                cursor: pointer;
+                margin-top: 15px;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #45a049;
+            }
+        </style> 
+    </head> 
+    <body> 
+        <p>Input radius value and get the volume of a sphere.</p> 
+        <form id="MyForm"> 
+            <label for="radius">Radius</label>
+            <input type="number" name="radius" id="radius" required step="any" min="0"> 
+            <label for="volume">Volume</label>
+            <input type="text" name="volume" id="volume" readonly> 
+            <input type="submit" value="Calculate" id="submit">    
+        </form> 
+
+        <script>
+            document.getElementById('MyForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get radius value
+                const radius = parseFloat(document.getElementById('radius').value);
+                
+                // Calculate volume (V = 4/3 * π * r³)
+                const volume = (4/3) * Math.PI * Math.pow(radius, 3);
+                
+                // Display result with 2 decimal places
+                document.getElementById('volume').value = volume.toFixed(2);
+            });
+        </script>
+    </body> 
+</html>
