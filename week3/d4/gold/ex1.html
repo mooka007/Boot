@@ -1,0 +1,16 @@
+<select id="genres">
+  <option value="rock">Rock</option>
+  <option value="blues">Blues</option>
+  <option value="classic" selected>Classic</option>
+</select>
+
+<script>
+  // Display selected value
+  const genresSelect = document.getElementById('genres');
+  console.log(genresSelect.value); 
+  
+  // Add event listener to track changes
+  genresSelect.addEventListener('change', function() {
+    console.log('Selected:', this.value);
+  });
+</script>

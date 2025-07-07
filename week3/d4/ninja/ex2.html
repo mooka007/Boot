@@ -1,0 +1,51 @@
+<!-- Without Regex -->
+<form id="emailForm">
+  <input type="email" id="emailInput" required>
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  document.getElementById('emailForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('emailInput').value;
+    
+    if (!email.includes('@')) {
+      alert('Email must contain @');
+      return;
+    }
+    
+    const parts = email.split('@');
+    if (parts.length !== 2 || !parts[0] || !parts[1]) {
+      alert('Invalid email format');
+      return;
+    }
+    
+    const domainParts = parts[1].split('.');
+    if (domainParts.length < 2 || !domainParts[0] || !domainParts[1]) {
+      alert('Invalid domain');
+      return;
+    }
+    
+    alert('Valid email!');
+  });
+</script>
+
+<!-- With Regex -->
+<script>
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  document.getElementById('emailForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('emailInput').value;
+    
+    if (!validateEmail(email)) {
+      alert('Invalid email address');
+      return;
+    }
+    
+    alert('Valid email!');
+  });
+</script>

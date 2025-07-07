@@ -1,0 +1,24 @@
+<button id="geolocateBtn">Get My Location</button>
+<div id="coordinates"></div>
+
+<script>
+  document.getElementById('geolocateBtn').addEventListener('click', function() {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        const coordsDiv = document.getElementById('coordinates');
+        coordsDiv.innerHTML = `
+          Latitude: ${position.coords.latitude}<br>
+          Longitude: ${position.coords.longitude}
+        `;
+      },
+      function(error) {
+        alert(`Error getting location: ${error.message}`);
+      }
+    );
+  });
+</script>
