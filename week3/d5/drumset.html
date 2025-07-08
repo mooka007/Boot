@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drums</title>
+
+    <style>
+        html {
+            font-size: 10px;
+            background: url('./drums/background.jpg') bottom center;
+            background-size: cover;
+        }
+  
+body,html{
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.keys{
+  display: flex;
+  flex:1;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.key{
+  border: 2px solid black;
+  border-radius: 5px;
+  margin: 1%;
+  font-size: 5px;
+  padding: 1rem .5rem;
+  width: 10rem;
+  transition: all .07s ease;
+  text-align: center;
+  color:white;
+  background: rgba(47, 45, 45, 0.4) ;
+  text-shadow: 0 0 .5rem black;
+
+}
+
+kbd{
+  display: block;
+  font-size: 4rem;
+}
+
+.sound{
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: .1rem;
+  color:#f6b640;
+}
+
+.playing{
+  transform: scale(1.1);
+  border-color:#f6b640;
+  box-shadow: 0 0 1rem #f0ab76;
+}
+
+    </style>
+</head>
+<body>
+    <div class = 'keys'>
+        <div data-key="65" class="key">
+        <kbd>A</kbd>
+        <span class="sound">clap</span>
+        </div>
+        <div data-key="83" class="key">
+        <kbd>S</kbd>
+        <span class="sound">hihat</span>
+        </div>
+        <div data-key="68" class = "key">
+        <kbd>D</kbd>
+        <span class = "sound">kick</span>
+        </div>
+        <div data-key="70" class = "key">
+        <kbd>F</kbd>
+        <span class = "sound">openhat</span>
+        </div>
+        <div data-key = "71" class="key">
+        <kbd>G</kbd>
+        <span class="sound">boom</span>
+        </div>
+        <div data-key = "72" class = "key">
+        <kbd>H</kbd>
+        <span class = "sound">ride</span>
+
+        </div>
+        <div data-key="74" class = "key">
+        <kbd>J</kbd>
+        <span class="sound">snare</span>
+        </div>
+        <div data-key="75" class = "key">
+        <kbd>K</kbd>
+        <span class = "sound">tom</span>
+        </div>
+        <div data-key="76" class="key">
+        <kbd>L</kbd>
+        <span class="sound">tink</span>
+        </div>
+    </div>
+
+    <audio data-key="65" src="drums/clap.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key = "83" src = "drums/hihat.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key="68" src="drums/kick.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key = "70" src="drums/openhat.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key = "71" src = "drums/boom.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key="72" src="drums/ride.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key = "74" src="drums/snare.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key="75" src="drums/tom.wav" preload="none" crossorigin="anonymous"></audio>
+    <audio data-key="76" src="drums/tink.wav" preload="none" crossorigin="anonymous"></audio>
+
+
+    <script>
+        window.addEventListener('keydown', function(e){
+            const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+            const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+            if(!audio) return;
+            audio.currentTime = 0;
+            audio.play();
+            key.classList.add('playing');
+        })
+
+        function removeTransition(e) {
+            if(e.propertyName !== "box-shadow") return;
+            this.classList.remove('playing');
+        }
+        
+        const keys = document.querySelectorAll('.key');
+        keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+    </script>
+</body>
+</html>
