@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coloring Squares Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #colorPalette {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .color {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(10, 50px); /* 10 columns */
+            grid-template-rows: repeat(10, 50px); /* 10 rows */
+            gap: 1px;
+            margin: auto;
+        }
+
+        .square {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coloring Squares Game</h1>
+    <div id="colorPalette">
+        <div class="color" style="background-color: red;" data-color="red"></div>
+        <div class="color" style="background-color: green;" data-color="green"></div>
+        <div class="color" style="background-color: blue;" data-color="blue"></div>
+        <div class="color" style="background-color: yellow;" data-color="yellow"></div>
+        <div class="color" style="background-color: orange;" data-color="orange"></div>
+    </div>
+    <div id="grid"></div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        let selectedColor = '';
+
+        // Create the grid of squares
+        for (let i = 0; i < 100; i++) { 
+            const square = document.createElement('div');
+            square.classList.add('square');
+            
+            // Add mouse event listeners for drawing
+            square.addEventListener('mousedown', () => paint(square));
+            square.addEventListener('mouseover', () => {
+                if (isMouseDown) {
+                    paint(square);
+                }
+            });
+            grid.appendChild(square);
+        }
+
+        // Update selected color on click
+        const colors = document.querySelectorAll('.color');
+        colors.forEach(color => {
+            color.addEventListener('click', () => {
+                selectedColor = color.dataset.color;
+            });
+        });
+
+        // Track mouse state for dragging paint
+        let isMouseDown = false;
+        document.addEventListener('mousedown', () => {
+            isMouseDown = true;
+        });
+        document.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        // Paint function to change square color
+        function paint(square) {
+            if (selectedColor) {
+                square.style.backgroundColor = selectedColor;
+            }
+        }
+    </script>
+</body>
+</html>
