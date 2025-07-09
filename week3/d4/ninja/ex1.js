@@ -6,7 +6,7 @@ function calculateTip() {
   // Get input values
   const billAmount = parseFloat(document.getElementById('billAmt').value);
   const serviceQuality = parseFloat(document.getElementById('serviceQual').value);
-  let numberOfPeople = parseInt(document.getElementById('numOfPeople').value);
+  let numberOfPeople = parseInt(document.getElementById('peopleamt').value);
 
   // Validate inputs
   if (isNaN(billAmount) ){

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <style>
+        .navbar {
+            background-color: #333;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            color: white;
+            font-weight: bold;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-info img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">My Website</div>
+        <div id="userContainer"></div>
+    </nav>
+    <script>
+        (function(userName) {
+            const userContainer = document.getElementById('userContainer');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-info';
+            
+            userDiv.innerHTML = `
+                <span>Welcome, ${userName}!</span>
+                <img src="https://i.pravatar.cc/150?u=${userName}" alt="${userName}'s profile">
+            `;
+            
+            userContainer.appendChild(userDiv);
+        })('John');
+    </script>
+</body>
+</html>
