@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Data</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const resultDiv = document.getElementById('result');
+            
+            if (params.size > 0) {
+                resultDiv.innerHTML = `
+                    <h2>Received Data:</h2>
+                    <p>First Name: ${params.get('name') || 'Not provided'}</p>
+                    <p>Last Name: ${params.get('lastname') || 'Not provided'}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = '<p>No data received. Did you submit from the form page?</p>';
+            }
+        });
+    </script>
+</head>
+<body>
+    <div id="result"></div>
+</body>
+</html>
