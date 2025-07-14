@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote generator</title>
+    <style>
+      body {
+        font-family: "Courier New", Courier, monospace;
+        text-align: center;
+        margin: 50px;
+      }
+      .Generate_btn {
+        border-color: aqua;
+        border-radius: 5px;
+        background-color: rgb(3, 20, 14);
+        color: white;
+        padding: 10px 20px;
+        font-size: 20px;
+         margin: 5px;
+      }
+      #Generate_section {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 600px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        min-height: 100px;
+      }
+     
+      textarea, input {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .Generate_btn:hover {
+  background-color: teal;     
+  transform: scale(1.05);      
+}
+    </style>
+  </head>
+  <body>
+      <h1>Quote Generator</h1>
+    <section id="Generate_section"></section>
+    <button class="Generate_btn" onclick="generateQuote()">Generate Quote</button>
+   
+   
+    <h2>Add a New Quote</h2>
+  <form id="myform">
+      <input type="text" placeholder="Enter the Author" id="input_author" />
+      </br></br>
+      <textarea placeholder="Enter the Quote" id="input_quote"> </textarea>
+      </br>
+      </br>
+      <button class="Generate_btn" type="submit" >Add Quote</button>
+  </form>
+
+  <h2>Filter Quotes by Author</h2>
+<form id="filterForm">
+  <input type="text" id="filterAuthor" placeholder="Enter author's name" />
+  <button type="submit" class="Generate_btn">Filter</button>
+</form>
+
+<div id="filteredQuoteSection"></div>
+<button id="prevBtn" class="Generate_btn" style="display: none;">Previous</button>
+<button id="nextBtn" class="Generate_btn" style="display: none;">Next</button>
+
+    <script>
+
+        const quotes = [
+  {
+    id: 0,
+    author: "Charles Lindbergh",
+    quote:
+      " Life is like a lzndsczpe. You live in the midst of it but can describe it only from the vantage point of distance.",
+    likes: 0,
+  },
+  {
+    id: 1,
+    author: "Alan Kay",
+    quote: "The best way to predict the future is to invent it.",
+    likes: 0,
+  },
+  {
+    id: 2,
+    author: "Steve Jobs",
+    quote: "Your time is limited, don't waste it living someone else's life.",
+    likes: 0,
+  },
+  {
+    id: 3,
+    author: "Alan Kay",
+    quote: "The best way to predict the future is to invent it.",
+    likes: 0,
+  },
+];
+
+let currentQuoteIndex = null;
+function generateQuote() {
+  const section = document.getElementById("Generate_section");
+  const randomIndext = Math.floor(Math.random() * quotes.length);
+  const quotObj = quotes[randomIndext];
+
+  section.innerHTML = ` <p>"${quotObj.quote}"</p>
+                      <p><em>- ${quotObj.author}</em></p>`;
+}
+function AjouteQuote(quoteObj) {
+  const section = document.getElementById("Generate_section");
+
+  const quoteDiv = document.createElement("div");
+  quoteDiv.innerHTML = `
+    <p>"${quoteObj.quote}"</p>
+    <p><em>- ${quoteObj.author}</em></p>
+  `;
+  section.appendChild(quoteDiv);
+}
+document.getElementById("myform").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const quoteText = document.getElementById("input_quote").value.trim();
+  const authorText = document.getElementById("input_author").value.trim();
+
+  if (quoteText !== "" && authorText !== "") {
+    const newQuote = {
+      id: quotes.length,
+      quote: quoteText,
+      author: authorText,
+      likes: 0,
+    };
+
+    quotes.push(newQuote);
+    AjouteQuote(newQuote);
+    currentQuoteIndex = newQuote.id;
+
+    document.getElementById("myform").reset();
+  }
+});
+
+let filteredQuotes = [];
+let filteredIndex = 0;
+
+document.getElementById("filterForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const authorName = document
+    .getElementById("filterAuthor")
+    .value.trim()
+    .toLowerCase();
+
+  filteredQuotes = quotes.filter((q) =>
+    q.author.toLowerCase().includes(authorName)
+  );
+  filteredIndex = 0;
+
+  if (filteredQuotes.length > 0) {
+    showFilteredQuote();
+    document.getElementById("prevBtn").style.display = "inline-block";
+    document.getElementById("nextBtn").style.display = "inline-block";
+  } else {
+    document.getElementById(
+      "filteredQuoteSection"
+    ).innerHTML = `<p>No quotes found for this author.</p>`;
+    document.getElementById("prevBtn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "none";
+  }
+});
+
+// Afficher une citation filtrée
+function showFilteredQuote() {
+  const q = filteredQuotes[filteredIndex];
+  document.getElementById("filteredQuoteSection").innerHTML = `
+    <p>"${q.quote}"</p>
+    <p><em>- ${q.author}</em></p>
+  `;
+}
+
+// Bouton précédent
+document.getElementById("prevBtn").addEventListener("click", () => {
+  if (filteredIndex > 0) {
+    filteredIndex--;
+    showFilteredQuote();
+  }
+});
+
+// Bouton suivant
+document.getElementById("nextBtn").addEventListener("click", () => {
+  if (filteredIndex < filteredQuotes.length - 1) {
+    filteredIndex++;
+    showFilteredQuote();
+  }
+});
+    </script>
+  </body>
+</html>

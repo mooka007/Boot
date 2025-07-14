@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Name Form</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      input {
+        padding: 8px;
+        font-size: 16px;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #output {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Name Form</h1>
+
+    <form id="nameForm">
+      <div>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" required />
+      </div>
+
+      <div>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" required />
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <h2>Output:</h2>
+    <div id="output">Submitted data will appear here as JSON</div>
+
+    <script>
+      document
+        .getElementById("nameForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const firstName = document.getElementById("firstName").value;
+          const lastName = document.getElementById("lastName").value;
+
+          const formData = {
+            firstName: firstName,
+            lastName: lastName,
+          };
+
+          const jsonString = JSON.stringify(formData, null, 2);
+          document.getElementById("output").textContent = jsonString;
+          this.reset();
+        });
+    </script>
+  </body>
+</html>
