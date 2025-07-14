@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+      }
+      .board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-gap: 5px;
+        margin: 20px auto;
+        width: 310px;
+      }
+      .cell {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        cursor: pointer;
+      }
+      .controls {
+        margin: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .message {
+        font-size: 24px;
+        margin: 20px;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Tic Tac Toe</h1>
+    <div class="controls">
+      <button id="playX">Play as X</button>
+      <button id="playO">Play as O</button>
+      <button id="easy">Easy Mode</button>
+      <button id="hard">Hard Mode</button>
+    </div>
+    <div class="message" id="message"></div>
+    <div class="board" id="board"></div>
+    <button id="restart" style="display: none">Play Again</button>
+
+    <script>
+      let board = ["", "", "", "", "", "", "", "", ""];
+      let currentPlayer = "";
+      let playerSymbol = "";
+      let computerSymbol = "";
+      let gameActive = false;
+      let difficulty = "easy";
+      const winCombos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [6, 4, 2],
+      ];
+
+      const boardElement = document.getElementById("board");
+      const messageElement = document.getElementById("message");
+      const restartButton = document.getElementById("restart");
+
+      function initializeBoard() {
+        boardElement.innerHTML = "";
+        for (let i = 0; i < 9; i++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.id = `cell-${i}`;
+          cell.addEventListener("click", () => handleCellClick(i));
+          boardElement.appendChild(cell);
+        }
+      }
+
+      function startGame(symbol) {
+        playerSymbol = symbol;
+        computerSymbol = symbol === "X" ? "O" : "X";
+        currentPlayer = "X";
+        board = ["", "", "", "", "", "", "", "", ""];
+        gameActive = true;
+        messageElement.textContent = `You are ${playerSymbol}. Game started!`;
+        restartButton.style.display = "none";
+        updateBoardDisplay();
+
+        if (currentPlayer === computerSymbol) {
+          setTimeout(computerMove, 500);
+        }
+      }
+
+      function handleCellClick(index) {
+        if (
+          !gameActive ||
+          board[index] !== "" ||
+          currentPlayer !== playerSymbol
+        )
+          return;
+
+        board[index] = playerSymbol;
+        updateBoardDisplay();
+
+        if (checkWin(playerSymbol)) {
+          endGame(`You win!`);
+          return;
+        }
+
+        if (checkTie()) {
+          endGame(`Tie game!`);
+          return;
+        }
+
+        currentPlayer = computerSymbol;
+        setTimeout(computerMove, 500);
+      }
+
+      function computerMove() {
+        if (!gameActive || currentPlayer !== computerSymbol) return;
+
+        let move;
+
+        if (difficulty === "hard") {
+          move = findWinningMove(computerSymbol);
+          if (move === -1) {
+            move = findWinningMove(playerSymbol);
+            if (move === -1) {
+              if (board[4] === "") move = 4;
+              else {
+                const availableSpots = board
+                  .map((spot, index) => (spot === "" ? index : -1))
+                  .filter((index) => index !== -1);
+                move =
+                  availableSpots[
+                    Math.floor(Math.random() * availableSpots.length)
+                  ];
+              }
+            }
+          }
+        } else {
+          const availableSpots = board
+            .map((spot, index) => (spot === "" ? index : -1))
+            .filter((index) => index !== -1);
+          move =
+            availableSpots[Math.floor(Math.random() * availableSpots.length)];
+        }
+
+        if (move !== undefined && move !== -1) {
+          board[move] = computerSymbol;
+          updateBoardDisplay();
+
+          if (checkWin(computerSymbol)) {
+            endGame(`Computer wins!`);
+            return;
+          }
+
+          if (checkTie()) {
+            endGame(`Tie game!`);
+            return;
+          }
+
+          currentPlayer = playerSymbol;
+        }
+      }
+
+      function findWinningMove(symbol) {
+        for (const combo of winCombos) {
+          const [a, b, c] = combo;
+          if (board[a] === symbol && board[b] === symbol && board[c] === "")
+            return c;
+          if (board[a] === symbol && board[c] === symbol && board[b] === "")
+            return b;
+          if (board[b] === symbol && board[c] === symbol && board[a] === "")
+            return a;
+        }
+        return -1;
+      }
+
+      function checkWin(symbol) {
+        return winCombos.some((combo) => {
+          return combo.every((index) => board[index] === symbol);
+        });
+      }
+
+      function checkTie() {
+        return board.every((cell) => cell !== "");
+      }
+
+      function endGame(message) {
+        gameActive = false;
+        messageElement.textContent = message;
+        restartButton.style.display = "block";
+      }
+
+      function updateBoardDisplay() {
+        board.forEach((symbol, index) => {
+          document.getElementById(`cell-${index}`).textContent = symbol;
+        });
+      }
+
+      document.getElementById("playX").addEventListener("click", () => {
+        if (!gameActive) startGame("X");
+      });
+
+      document.getElementById("playO").addEventListener("click", () => {
+        if (!gameActive) startGame("O");
+      });
+
+      document.getElementById("easy").addEventListener("click", () => {
+        difficulty = "easy";
+        messageElement.textContent = "Difficulty set to Easy";
+      });
+
+      document.getElementById("hard").addEventListener("click", () => {
+        difficulty = "hard";
+        messageElement.textContent = "Difficulty set to Hard";
+      });
+
+      restartButton.addEventListener("click", () => {
+        initializeBoard();
+        startGame(playerSymbol);
+      });
+
+      initializeBoard();
+      messageElement.textContent = "Choose your symbol (X or O) and difficulty";
+    </script>
+  </body>
+</html>
