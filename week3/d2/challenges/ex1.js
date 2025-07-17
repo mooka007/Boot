@@ -10,3 +10,4 @@ if (wordNot && wordBad && wordBad > wordNot) {
 } else {
     console.log(sentence)
 }
+
