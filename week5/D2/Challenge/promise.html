@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunrise Comparison</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .city-input {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      h2 {
+        margin-top: 5px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input {
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #results {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+      .time-diff {
+        font-weight: bold;
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sunrise Time Comparison</h1>
+
+    <div class="city-input">
+      <h2>City 1 (Paris)</h2>
+      <label for="lat1">Latitude:</label>
+      <input type="text" id="lat1" value="48.864716" />
+
+      <label for="lng1">Longitude:</label>
+      <input type="text" id="lng1" value="2.349014" />
+    </div>
+
+    <div class="city-input">
+      <h2>City 2 (New York)</h2>
+      <label for="lat2">Latitude:</label>
+      <input type="text" id="lat2" value="40.730610" />
+
+      <label for="lng2">Longitude:</label>
+      <input type="text" id="lng2" value="-73.935242" />
+    </div>
+
+    <button id="compare-btn">Compare Sunrise Times</button>
+
+    <div id="results"></div>
+
+    <script>
+      document.getElementById('compare-btn').addEventListener('click', async function() {
+          const lat1 = document.getElementById('lat1').value;
+          const lng1 = document.getElementById('lng1').value;
+          const lat2 = document.getElementById('lat2').value;
+          const lng2 = document.getElementById('lng2').value;
+          const resultsDiv = document.getElementById('results');
+
+          resultsDiv.innerHTML = '<p>Loading sunrise data...</p>';
+
+          if (!lat1 || !lng1 || !lat2 || !lng2) {
+              resultsDiv.innerHTML = '<p style="color:red">Please enter all coordinates</p>';
+              return;
+          }
+
+          try {
+              // Create API URLs
+              const url1 = `https://api.sunrise-sunset.org/json?lat=${lat1}&lng=${lng1}&formatted=0`;
+              const url2 = `https://api.sunrise-sunset.org/json?lat=${lat2}&lng=${lng2}&formatted=0`;
+
+              // Fetch both cities simultaneously
+              const [city1Res, city2Res] = await Promise.all([
+                  fetch(url1).then(res => res.json()),
+                  fetch(url2).then(res => res.json())
+              ]);
+
+              // Check for API errors
+              if (city1Res.status !== 'OK' || city2Res.status !== 'OK') {
+                  throw new Error('Failed to get sunrise data for one or both locations');
+              }
+
+              const city1Sunrise = new Date(city1Res.results.sunrise);
+              const city2Sunrise = new Date(city2Res.results.sunrise);
+
+              const diffMs = city1Sunrise - city2Sunrise;
+              const hoursDiff = Math.abs(Math.floor(diffMs / (1000 * 60 * 60)));
+              const minsDiff = Math.abs(Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+              const city1Time = city1Sunrise.toUTCString().split(' ')[4];
+              const city2Time = city2Sunrise.toUTCString().split(' ')[4];
+
+              resultsDiv.innerHTML = `
+                  <h3>Results</h3>
+                  <p><strong>Paris Sunrise:</strong> ${city1Time} UTC</p>
+                  <p><strong>New York Sunrise:</strong> ${city2Time} UTC</p>
+                  <p class="time-diff">Time difference: ${hoursDiff} hours and ${minsDiff} minutes</p>
+                  <p><small>Note: Times are in UTC (GMT+0)</small></p>
+              `;
+
+          } catch (error) {
+              resultsDiv.innerHTML = `<p style="color:red">Error: ${error.message}</p>`;
+          }
+      });
+    </script>
+  </body>
+</html>

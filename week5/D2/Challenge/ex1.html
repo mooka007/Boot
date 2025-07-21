@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giphy Search</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      #gif-form {
+        margin-bottom: 20px;
+      }
+      #gif-input {
+        padding: 8px;
+        width: 200px;
+      }
+      button {
+        padding: 8px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      #delete-all {
+        background-color: #f44336;
+        margin-bottom: 20px;
+      }
+      .gif-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 10px;
+      }
+      .delete-btn {
+        background-color: #f44336;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Giphy Search</h1>
+    <form id="gif-form">
+      <input
+        type="text"
+        id="gif-input"
+        placeholder="Enter a category (e.g., cats)"
+        required
+      />
+      <button type="submit">Search GIF</button>
+    </form>
+    <button id="delete-all">DELETE ALL GIFs</button>
+    <div id="gifs-container"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
