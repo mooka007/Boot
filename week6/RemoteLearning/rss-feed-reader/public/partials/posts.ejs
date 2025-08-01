@@ -1,0 +1,34 @@
+<div class="container mt-4">
+    <% if (locals.searchResults || locals.feed) { %>
+        <% const itemsToDisplay = locals.searchResults || locals.feed.items; %>
+        <% if (itemsToDisplay && itemsToDisplay.length > 0) { %>
+            <% itemsToDisplay.forEach(item => { %>
+                <div class="card post-card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="<%= item.link %>" target="_blank" rel="noopener noreferrer">
+                                <%= item.title %>
+                            </a>
+                        </h5>
+                        <div class="post-meta">
+                            <% if (item.pubDate) { %>
+                                <span>Published: <%= new Date(item.pubDate).toLocaleDateString() %></span>
+                            <% } %>
+                            <% if (item.creator) { %>
+                                <span> | Author: <%= item.creator %></span>
+                            <% } %>
+                            <% if (item.categories && item.categories.length > 0) { %>
+                                <span> | Category: <%= item.categories.join(', ') %></span>
+                            <% } %>
+                        </div>
+                        <div class="card-text">
+                            <%= item.contentSnippet || item.content %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="alert alert-info">No posts found matching your criteria.</div>
+        <% } %>
+    <% } %>
+</div>

@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "title": "Learn Express.js",
+    "description": "Build a REST API",
+    "completed": false,
+    "createdAt": "2025-06-11T09:06:36.529Z",
+    "updatedAt": "2025-06-11T09:06:36.529Z"
+  },
+  {
+    "id": 2,
+    "title": "Learn Express.js",
+    "description": "Build a REST API",
+    "completed": false,
+    "createdAt": "2025-06-11T09:07:06.646Z",
+    "updatedAt": "2025-06-11T09:07:06.646Z"
+  }
+]

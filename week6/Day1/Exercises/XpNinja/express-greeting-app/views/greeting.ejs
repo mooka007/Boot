@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Greeting</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="greeting-container">
+            <div class="greeting-card">
+                <h1 class="greeting-title">Hello, <%= name %>! <%= emoji %></h1>
+                <p class="greeting-message">
+                    Welcome! We hope your day is as amazing as you are! <%= emoji %>
+                </p>
+                <div class="emoji-display"><%= emoji %></div>
+            </div>
+            
+            <div class="actions">
+                <a href="/" class="back-btn">← Create Another Greeting</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

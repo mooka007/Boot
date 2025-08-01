@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+    <%- include('../partials/header') %>
+    
+    <main class="container mt-5">
+        <h1 class="mb-4">Search Facts</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="search-form">
+                    <h3>Search by Title</h3>
+                    <form action="/search/title" method="POST">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="title" placeholder="Enter title keyword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="search-form">
+                    <h3>Search by Category</h3>
+                    <form action="/search/category" method="POST">
+                        <div class="mb-3">
+                            <select class="form-select" name="category" required>
+                                <option value="" selected disabled>Select a category</option>
+                                <% if (feed && feed.items) { %>
+                                    <% const categories = new Set(); %>
+                                    <% feed.items.forEach(item => { %>
+                                        <% if (item.categories) { %>
+                                            <% item.categories.forEach(cat => categories.add(cat)); %>
+                                        <% } %>
+                                    <% }); %>
+                                    <% Array.from(categories).sort().forEach(cat => { %>
+                                        <option value="<%= cat %>"><%= cat %></option>
+                                    <% }); %>
+                                <% } %>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <% if (searchResults) { %>
+            <h2 class="mt-5 mb-3">Search Results</h2>
+            <%- include('../partials/posts', { searchResults: searchResults }) %>
+        <% } %>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>
