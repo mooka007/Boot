@@ -1,0 +1,38 @@
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.response {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.response.success {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.response.error {
+  background-color: #f2dede;
+  color: #a94442;
+}

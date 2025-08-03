@@ -1,0 +1,35 @@
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.App h2 {
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.App a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.App a:hover {
+  text-decoration: underline;
+}
+
+.App ul {
+  padding-left: 20px;
+}
+
+.App li {
+  margin-bottom: 5px;
+}
+
+.App hr {
+  margin: 20px 0;
+  border: 0;
+  border-top: 1px solid #eee;
+}
